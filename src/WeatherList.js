@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 
+import WeatherListItem from './WeatherListItem';
+
 const API_URL = 'forecast.json';
 
 class WeatherList extends Component {
@@ -38,7 +40,7 @@ class WeatherList extends Component {
     return (
 			!this.state.loaded ? <div>Loading</div> : <div>
 				<div>{this.state.city}</div>
-				{this.state.weather.map((w, i) => <div key={i}>{w.date} {w.desc} {w.min} {w.max}</div>)}
+				{this.state.weather.map((w, i) => <WeatherListItem key={i} weather={w} />)}
 			</div>
     );
   }
