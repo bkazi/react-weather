@@ -29,6 +29,7 @@ function handler(req, res) {
     const searchString = queryParams.q;
     const limit = queryParams.lim || 20;
     const result = fuse.search(searchString);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Content-Type', 'application/json');
     res.write(JSON.stringify(result.slice(0, limit)));
     res.end();
