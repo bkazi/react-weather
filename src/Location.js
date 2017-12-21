@@ -3,17 +3,24 @@ import {Component} from 'react';
 class Location extends Component {
     state = {
         isLoading: false,
-        coords: {},
+        coords: null,
         err: null,
     };
 
     componentDidMount() {
         navigator.geolocation.getCurrentPosition(
             (pos) => {
-                this.setState({isLoading: false, coords: pos.coords, err: null});
+                this.setState({
+                    isLoading: false,
+                    coords: {
+                        latitude: pos.coords.latitude,
+                        longitude: pos.coords.longitude,
+                    },
+                    err: null,
+                });
             },
             (err) => {
-                this.setState({isLoading: false, coords: {}, err: err});
+                this.setState({isLoading: false, coords: null, err: err});
             },
             {
                 enableHighAccuracy: false,
