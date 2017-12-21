@@ -4,6 +4,7 @@ const SEARCH_BASE_URL = 'http://localhost:8080';
 
 class WeatherSearch extends Component {
     state = {
+        value: '',
         results: [],
     };
 
@@ -22,8 +23,9 @@ class WeatherSearch extends Component {
     }
 
     onCityInput = (e) => {
-        const searchString = e.target.value;
-        this.searchCity(searchString, (results) => {
+        const value = e.target.value;
+        this.setState({value});
+        this.searchCity(value, (results) => {
             this.setState({
                 results,
             });
@@ -33,9 +35,12 @@ class WeatherSearch extends Component {
     render() {
         return (
             <div>
-                <input type="text" placeholder="City" onChange={this.onCityInput}></input>
+                <input type="text" placeholder="City" value={this.state.value} onChange={this.onCityInput}></input>
                 <div>
-                    {this.state.results.map(city => <div key={city.id}>{city.name}, {city.country}</div>)}
+                    {this.state.results.map(city => <div key={city.id} onClick={() => {
+                        this.setState({value: '', results: []});
+                        this.props.onCityIdChange(city.id);
+                    }}>{city.name}, {city.country}</div>)}
                 </div>
             </div>
         );

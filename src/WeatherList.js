@@ -17,6 +17,15 @@ class WeatherList extends Component {
 		.then(this.processData);
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		if (this.props.cityId === prevProps.cityId)
+			return;
+		console.log('change');
+		fetch(API_URL)
+		.then(res => res.json())
+		.then(this.processData);
+	}
+
 	processData = (json) => {
 		console.log(json);
 		const city = json.city.name;
