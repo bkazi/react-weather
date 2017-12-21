@@ -10,7 +10,6 @@ class App extends Component {
   }
 
   onCityIdChange = (cityId) => {
-    console.log(cityId);
     this.setState({
       cityId,
     });
