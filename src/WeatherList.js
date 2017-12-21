@@ -2,7 +2,14 @@ import React, {Component} from 'react';
 
 import WeatherListItem from './WeatherListItem';
 
-const API_URL = 'forecast.json';
+import {API_KEY} from './config';
+
+const API_BASE_URL = 'http://api.openweathermap.org/data/2.5/forecast/daily';
+const ID_QUERY = 'id';
+const LAT_QUERY = 'lat';
+const LONG_QUERY = 'lon';
+const API_KEY_QUERY = 'appid';
+const LIMIT = 7;
 
 class WeatherList extends Component {
 	state = {
@@ -11,17 +18,32 @@ class WeatherList extends Component {
 		loaded: false,
 	};
 
+	getUrl = () => {
+		const cityId = this.props.cityId;
+		const coords = this.props.coords;
+		const url = new URL(API_BASE_URL);
+		if (!cityId && coords) {
+			url.searchParams.append(LAT_QUERY, coords.latitude);
+			url.searchParams.append(LONG_QUERY, coords.longitude);
+		} else {
+			url.searchParams.append(ID_QUERY, cityId);
+		}
+		url.searchParams.append(API_KEY_QUERY, API_KEY);
+		return url.toString();
+	}
+
 	componentDidMount() {
-		fetch(API_URL)
+		if (!this.props.cityId && !this.props.coords)
+			return;
+		fetch(this.getUrl())
 		.then(res => res.json())
 		.then(this.processData);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (this.props.cityId === prevProps.cityId)
+		if (this.props.cityId === prevProps.cityId && this.props.coords === prevProps.coords)
 			return;
-		console.log('change');
-		fetch(API_URL)
+		fetch(this.getUrl())
 		.then(res => res.json())
 		.then(this.processData);
 	}
@@ -29,13 +51,14 @@ class WeatherList extends Component {
 	processData = (json) => {
 		console.log(json);
 		const city = json.city.name;
+		const lim = json.cnt > LIMIT ? LIMIT+1 : json.cnt;
 		const weather = json.list
-			.slice(0, 8)
+			.slice(0, lim)
 			.map((item) => ({
 				date: new Date(item.dt * 1000).toDateString(),
 				desc: item.weather[0].description,
-				min: item.main.temp_min - 273,
-				max: item.main.temp_max - 273,
+				min: item.temp.min - 273,
+				max: item.temp.max - 273,
 			}));
 		console.log(weather);
 		this.setState({
