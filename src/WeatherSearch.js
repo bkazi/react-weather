@@ -2,10 +2,12 @@ import React, {Component} from 'react'
 
 const SEARCH_BASE_URL = 'http://localhost:8080';
 
+const yourLoc = {name: "Your Location", id: null};
+
 class WeatherSearch extends Component {
     state = {
         value: '',
-        results: [],
+        results: [yourLoc],
     };
 
     searchCity = (searchString, onComplete) => {
@@ -27,7 +29,7 @@ class WeatherSearch extends Component {
         this.setState({value});
         this.searchCity(value, (results) => {
             this.setState({
-                results,
+                results: [yourLoc, ...results],
             });
         });
     }
@@ -38,7 +40,7 @@ class WeatherSearch extends Component {
                 <input type="text" placeholder="City" value={this.state.value} onChange={this.onCityInput}></input>
                 <div>
                     {this.state.results.map(city => <div key={city.id} onClick={() => {
-                        this.setState({value: '', results: []});
+                        this.setState({value: '', results: [yourLoc]});
                         this.props.onCityIdChange(city.id);
                     }}>{city.name}, {city.country}</div>)}
                 </div>

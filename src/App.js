@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 
 import WeatherList from './WeatherList';
-import WeatherSearch from './WeatherSearch'
+import WeatherSearch from './WeatherSearch';
+import Location from './Location';
 
 class App extends Component {
   state = {
@@ -17,10 +18,12 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-			  <WeatherSearch onCityIdChange={this.onCityIdChange}/>
-        <WeatherList cityId={this.state.cityId}/>
-      </div>
+        <Location render={({isLoading, coords, err}) =>
+          <div>
+            <WeatherSearch onCityIdChange={this.onCityIdChange}/>
+            <WeatherList cityId={this.state.cityId} coords={coords}/>
+          </div>
+        } />
     );
   }
 }
